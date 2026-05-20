@@ -1,0 +1,94 @@
+from dna_f_roh_estimate.dna_f_roh_estimate_my_heritage import InbredEstimateMyHeritage
+from dna_f_roh_estimate.dna_f_roh_estimate_ancestry import InbredEstimateAncestry
+from dna_f_roh_estimate.dna_f_roh_estimate_abstract import InbredEstimateAbstract
+from dna_f_roh_estimate.dna_f_roh_data import DataFROH
+from typing import Iterator
+
+
+class InbredEstimate:
+    """
+    Estimate F_ROH score, representing inbreeding/shared ancestry coefficient score, from DNA kit data.
+    """
+
+    def __init__(self, file_name: str | None = None) -> None:
+        """
+        Class constructor for instantiating an F_ROH estimator instance with optional file name parameter.
+        :param file_name: Path name to a supported DNA kit data file. If provided, the file is read at instantiation.
+        """
+        self.__dna_inbred_estimate: InbredEstimateAbstract | None = None
+        if file_name:
+            self.read_dna_data_file(file_name=file_name)
+
+    def __repr__(self) -> str:
+        """
+        :return: F_ROH analysis summary data in string format, or an empty string if no data is available.
+        """
+        if self.__dna_inbred_estimate and self.__dna_inbred_estimate.data:
+            return self.__dna_inbred_estimate.data.__repr__()
+        return ""
+
+    def __iter__(self) -> Iterator[tuple[str, int | float | None]]:
+        """
+        :return: F_ROH analysis summary data in dictionary format, or an empty dictionary if no data is available.
+        """
+        if self.__dna_inbred_estimate and self.__dna_inbred_estimate.data:
+            yield from self.__dna_inbred_estimate.data
+
+    @property
+    def data(self) -> DataFROH | None:
+        """
+        :return: Data from F_ROH analysis.
+        """
+        if self.__dna_inbred_estimate and self.__dna_inbred_estimate.data:
+            return self.__dna_inbred_estimate.data
+        return None
+
+    def read_dna_data_file(self, file_name: str) -> list[tuple[int, int, bool]]:
+        """
+        Read data from DNA kit file and parse in the following format:
+        [
+            {
+                autosomal_chromosome: int,
+                base_pair_position: int,
+                is_homozygous: bool
+            }
+        ]
+        :param file_name: The name of the DNA data file.
+        :return: Parsed DNA autosomal SNP data formatted into tuples of chromosome, base-pair position, homozygosity.
+        """
+        dna_inbred_estimate_tmp: InbredEstimateAbstract | None = self.__dna_inbred_estimate
+        if file_name.endswith(".csv"):
+            if not self.__dna_inbred_estimate or self.__dna_inbred_estimate.__class__ != InbredEstimateMyHeritage:
+                dna_inbred_estimate_tmp = InbredEstimateMyHeritage()
+        elif file_name.endswith(".txt"):
+            if not self.__dna_inbred_estimate or self.__dna_inbred_estimate.__class__ != InbredEstimateAncestry:
+                dna_inbred_estimate_tmp = InbredEstimateAncestry()
+        else:
+            raise ValueError("File type is not supported. Use either .csv or .txt")
+        self.__dna_inbred_estimate = dna_inbred_estimate_tmp
+        return self.__dna_inbred_estimate.read_dna_data_file(file_name=file_name) if self.__dna_inbred_estimate else []
+
+    def compute_f_roh_estimate(
+        self,
+        roh_min_snp_cnt: int = 100,
+        roh_min_base_pair_len: int = InbredEstimateAbstract.BASE_PAIRS_PER_MB,
+        roh_max_base_pair_range: int = InbredEstimateAbstract.BASE_PAIRS_PER_MB,
+        snp_max_heterozygous: int = 1,
+        snp_max_avg_range_kb: int = 50
+    ) -> None:
+        """
+        Compute F_ROH from parsed autosomal DNA data file for estimating inbreeding/shared-ancestry coefficient score.
+        :param roh_min_snp_cnt: Minimum number of SNP count required for a valid candidate ROH segment.
+        :param roh_min_base_pair_len: Minimum base-pair length required for a valid candidate ROH segment.
+        :param roh_max_base_pair_range: Maximum base-pair range between adjacent SNP genotypes in a valid candidate ROH.
+        :param snp_max_heterozygous: Maximum number of heterozygous SNP genotypes in a valid candidate ROH segment.
+        :param snp_max_avg_range_kb: Maximum avg range between adjacent SNP genotypes in a candidate ROH segment in Kb.
+        """
+        if self.__dna_inbred_estimate:
+            self.__dna_inbred_estimate.compute_f_roh_estimate(
+                roh_min_snp_cnt=roh_min_snp_cnt,
+                roh_min_base_pair_len=roh_min_base_pair_len,
+                roh_max_base_pair_range=roh_max_base_pair_range,
+                snp_max_heterozygous=snp_max_heterozygous,
+                snp_max_avg_range_kb=snp_max_avg_range_kb
+            )
