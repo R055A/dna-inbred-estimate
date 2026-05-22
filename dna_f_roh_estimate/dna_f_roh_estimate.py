@@ -3,7 +3,7 @@ from dna_f_roh_estimate.dna_f_roh_estimate_ancestry import InbredEstimateAncestr
 from dna_f_roh_estimate.dna_f_roh_estimate_abstract import InbredEstimateAbstract
 from dna_f_roh_estimate.dna_f_roh_enum import DnaKitFileUniqueIdentifier
 from dna_f_roh_estimate.dna_f_roh_data import DataFROH
-from utils import open_data_file
+from utils import read_data_file_first_line
 from typing import Iterator
 
 
@@ -55,8 +55,7 @@ class InbredEstimate:
         :param unique_format_identifier: The unique identifier word(s) in the first row of the DNA data file.
         :return: True if the first row of a data file contains the unique identifier word(s); otherwise False.
         """
-        file_data_lines: list[str] = open_data_file(file_name=file_name)
-        return unique_format_identifier.value in file_data_lines[0] if file_data_lines else False
+        return unique_format_identifier.value in read_data_file_first_line(file_name=file_name)
 
     def read_dna_data_file(self, file_name: str) -> list[tuple[int, int, bool]]:
         """

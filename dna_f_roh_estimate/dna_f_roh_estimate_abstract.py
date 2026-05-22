@@ -1,7 +1,7 @@
 from dna_f_roh_estimate.dna_f_roh_enum import DnaKitFileHeaderAbstract
 from dna_f_roh_estimate.dna_f_roh_data import DataFROH
+from utils import read_data_file_all_lines
 from abc import abstractmethod, ABC
-from utils import open_data_file
 
 
 class InbredEstimateAbstract(ABC):
@@ -168,7 +168,7 @@ class InbredEstimateAbstract(ABC):
         :param file_name: Path name to a supported DNA kit data file.
         :return: Parsed DNA autosomal SNP data formatted into tuples of chromosome, base-pair position, homozygosity.
         """
-        file_lines: list[str] = open_data_file(file_name=file_name)
+        file_lines: list[str] = read_data_file_all_lines(file_name=file_name)
         for i, line in enumerate(file_lines):
             cols = [c.strip().upper() for c in self._split_data_row(data_row=line)]
             if all(col.upper() in cols for col in self._headers):
