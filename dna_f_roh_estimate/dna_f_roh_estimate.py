@@ -50,10 +50,10 @@ class InbredEstimate:
             unique_format_identifier: DnaKitFileUniqueIdentifier
     ) -> bool:
         """
-        Conditional for if a unique identifier exists in the header row of a data file to verify DNA kit format.
+        Conditional for if a unique identifier exists in the first row of a data file to verify DNA kit format.
         :param file_name: The name of the DNA data file.
-        :param unique_format_identifier: The unique identifier word(s) in the header row of the DNA data file.
-        :return: True if the header row of a data file contains the unique identifier word(s); otherwise False.
+        :param unique_format_identifier: The unique identifier word(s) in the first row of the DNA data file.
+        :return: True if the first row of a data file contains the unique identifier word(s); otherwise False.
         """
         file_data_lines: list[str] = open_data_file(file_name=file_name)
         return unique_format_identifier.value in file_data_lines[0] if file_data_lines else False
@@ -80,7 +80,7 @@ class InbredEstimate:
                     ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimateMyHeritage)
             ):
                 dna_inbred_estimate_tmp = InbredEstimateMyHeritage()
-            else:
+            elif not isinstance(dna_inbred_estimate_tmp, InbredEstimateMyHeritage):
                 raise ValueError("CSV file format is not supported.")
         elif file_name.endswith(".txt"):
             if (
@@ -90,7 +90,7 @@ class InbredEstimate:
                     ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimateAncestry)
             ):
                 dna_inbred_estimate_tmp = InbredEstimateAncestry()
-            else:
+            elif not isinstance(dna_inbred_estimate_tmp, InbredEstimateAncestry):
                 raise ValueError("Text file format is not supported.")
         else:
             raise ValueError("File type is not supported. Use either .csv or .txt")
