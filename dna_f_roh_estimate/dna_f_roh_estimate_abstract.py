@@ -1,6 +1,7 @@
+from dna_f_roh_estimate.dna_f_roh_enum import DnaKitFileHeaderAbstract
 from dna_f_roh_estimate.dna_f_roh_data import DataFROH
+from utils import read_data_file_all_lines
 from abc import abstractmethod, ABC
-from utils import open_data_file
 
 
 class InbredEstimateAbstract(ABC):
@@ -8,23 +9,24 @@ class InbredEstimateAbstract(ABC):
     Abstract class for estimating F_ROH, representing inbreeding/shared ancestry coefficient score, from DNA kit data.
     """
 
-    __HEADER_RSID: str = "RSID"
-    __HEADER_CHROMOSOME: str = "CHROMOSOME"
-    __HEADER_POSITION: str = "POSITION"
-    __INVALID_ALLELES: tuple[str] = {"0", "--"}  # There are likely more invalid entries yet to be discovered in files
     BASE_PAIRS_PER_MB: int = 1_000_000
 
-    def __init__(self, file_name: str | None = None, headers: list[str] | None = None) -> None:
+    def __init__(
+            self,
+            file_name: str | None = None,
+            headers: list[str] | None = None,
+            invalid_alleles: set[str] | None = None
+    ) -> None:
         """
         Class constructor for instantiating an F_ROH estimator instance with optional file name and genotype headers.
         :param file_name: Path name to a supported DNA kit data file. If provided, the file is read at instantiation.
         :param headers: List of format-specific genotype header names in addition to [RSID, CHROMOSOME, POSITION].
+        :param invalid_alleles: Allele file entries which are not valid for F_ROH analysis.
         """
+        self.__invalid_alleles: set[str] = invalid_alleles if invalid_alleles else set()
         self.__snp_genotypes: list[tuple[int, int, bool]] = []
         self.__f_roh_data: DataFROH | None = None
-        self._headers: list[str] = (
-            [self.__HEADER_RSID, self.__HEADER_CHROMOSOME, self.__HEADER_POSITION] + headers if headers else []
-        )
+        self._headers: list[str] = [h.value for h in DnaKitFileHeaderAbstract] + (headers or [])
         if file_name:
             self.read_dna_data_file(file_name=file_name)
 
@@ -71,7 +73,7 @@ class InbredEstimateAbstract(ABC):
         :param data_row: List of parsed data rows from the DNA kit file.
         :return: Autosomal chromosome number between 1 and 22, or None if invalid.
         """
-        chromosome = data_row[header[self.__HEADER_CHROMOSOME]].strip().upper()
+        chromosome = data_row[header[DnaKitFileHeaderAbstract.HEADER_CHROMOSOME.value]].strip().upper()
         if chromosome.isdigit():
             chromosome = int(chromosome)
             if 1 <= chromosome <= 22:
@@ -85,7 +87,7 @@ class InbredEstimateAbstract(ABC):
         :param data_row: List of parsed data rows from the DNA kit file.
         :return: Base-pair position value, or None if invalid.
         """
-        position = data_row[header[self.__HEADER_POSITION]].strip()
+        position = data_row[header[DnaKitFileHeaderAbstract.HEADER_POSITION.value]].strip()
         if position.isdigit():
             return int(position)
         return None
@@ -96,7 +98,7 @@ class InbredEstimateAbstract(ABC):
         :param alleles_data: Allele value from the DNA kit file.
         :return: True if the value is valid; otherwise False.
         """
-        return alleles_data not in self.__INVALID_ALLELES
+        return alleles_data not in self.__invalid_alleles
 
     def __init_data(
             self,
@@ -166,7 +168,7 @@ class InbredEstimateAbstract(ABC):
         :param file_name: Path name to a supported DNA kit data file.
         :return: Parsed DNA autosomal SNP data formatted into tuples of chromosome, base-pair position, homozygosity.
         """
-        file_lines: list[str] = open_data_file(file_name=file_name)
+        file_lines: list[str] = read_data_file_all_lines(file_name=file_name)
         for i, line in enumerate(file_lines):
             cols = [c.strip().upper() for c in self._split_data_row(data_row=line)]
             if all(col.upper() in cols for col in self._headers):
