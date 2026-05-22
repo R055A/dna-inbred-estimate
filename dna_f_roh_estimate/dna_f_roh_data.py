@@ -7,13 +7,26 @@ class DataFROH:
     """
     F_ROH analysis summary data, including F_ROH estimate representing inbreeding/shared ancestry coefficient score.
     """
-    snp_autosomal_cnt_ttl: int | None  # Total count of usable autosomal chromosome SNPs.
-    snp_homozygous_cnt: int | None  # Count of usable autosomal chromosome SNPs with identical alleles.
-    snp_heterozygous_cnt: int | None  # Count of usable autosomal chromosome SNPs where alleles differ.
-    snp_invalid_cnt: int | None  # Count of invalid autosomal chromosome SNP calls excluded from F_ROH analysis.
-    roh_cnt: int | None  = None  # Count of valid homozygosity runs.
-    roh_len_ttl_mb: float | int | None = None  # Total of all valid ROH segment lengths (Mb).
-    denominator_mb: float | int | None = None  # Total range of autosomal chromosome data used in analysis (Mb).
+
+    snp_autosomal_cnt_ttl: (
+        int | None
+    )  # Total count of usable autosomal chromosome SNPs.
+    snp_homozygous_cnt: (
+        int | None
+    )  # Count of usable autosomal chromosome SNPs with identical alleles.
+    snp_heterozygous_cnt: (
+        int | None
+    )  # Count of usable autosomal chromosome SNPs where alleles differ.
+    snp_invalid_cnt: (
+        int | None
+    )  # Count of invalid autosomal chromosome SNP calls excluded from F_ROH analysis.
+    roh_cnt: int | None = None  # Count of valid homozygosity runs.
+    roh_len_ttl_mb: float | int | None = (
+        None  # Total of all valid ROH segment lengths (Mb).
+    )
+    denominator_mb: float | int | None = (
+        None  # Total range of autosomal chromosome data used in analysis (Mb).
+    )
     f_roh: float | int | None = None  # Estimated F_ROH value
     f_roh_percent: float | int | None = None  # Estimated F_ROH value as a percentage.
 
