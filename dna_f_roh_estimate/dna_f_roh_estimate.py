@@ -1,5 +1,3 @@
-from dna_f_roh_estimate.dna_f_roh_estimate_abstract_csv import InbredEstimateAbstractCsv
-from dna_f_roh_estimate.dna_f_roh_estimate_abstract_txt import InbredEstimateAbstractTxt
 from dna_f_roh_estimate.dna_f_roh_estimate_my_heritage import InbredEstimateMyHeritage
 from dna_f_roh_estimate.dna_f_roh_estimate_ancestry import InbredEstimateAncestry
 from dna_f_roh_estimate.dna_f_roh_estimate_abstract import InbredEstimateAbstract
@@ -52,12 +50,13 @@ class InbredEstimate:
             unique_format_identifier: DnaKitFileUniqueIdentifier
     ) -> bool:
         """
-        Conditional for if a unique identifier exists in the header row of a data file to confirm data file format.
+        Conditional for if a unique identifier exists in the header row of a data file to verify DNA kit format.
         :param file_name: The name of the DNA data file.
         :param unique_format_identifier: The unique identifier word(s) in the header row of the DNA data file.
         :return: True if the header row of a data file contains the unique identifier word(s); otherwise False.
         """
-        return unique_format_identifier.value in open_data_file(file_name=file_name)[0]
+        file_data_lines: list[str] = open_data_file(file_name=file_name)
+        return unique_format_identifier.value in file_data_lines[0] if file_data_lines else False
 
     def read_dna_data_file(self, file_name: str) -> list[tuple[int, int, bool]]:
         """
@@ -74,23 +73,25 @@ class InbredEstimate:
         """
         dna_inbred_estimate_tmp: InbredEstimateAbstract | None = self.__dna_inbred_estimate
         if file_name.endswith(".csv"):
-            if not self.__dna_inbred_estimate or not isinstance(dna_inbred_estimate_tmp, InbredEstimateAbstractCsv):
-                if self.__is_format_identifier_in_file(
-                        file_name=file_name,
-                        unique_format_identifier=DnaKitFileUniqueIdentifier.MY_HERITAGE
-                ):
-                    dna_inbred_estimate_tmp = InbredEstimateMyHeritage()
-                else:
-                    raise ValueError("CSV file format is not supported.")
+            if (
+                    self.__is_format_identifier_in_file(
+                    file_name=file_name,
+                    unique_format_identifier=DnaKitFileUniqueIdentifier.MY_HERITAGE
+                    ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimateMyHeritage)
+            ):
+                dna_inbred_estimate_tmp = InbredEstimateMyHeritage()
+            else:
+                raise ValueError("CSV file format is not supported.")
         elif file_name.endswith(".txt"):
-            if not self.__dna_inbred_estimate or not isinstance(dna_inbred_estimate_tmp, InbredEstimateAbstractTxt):
-                if self.__is_format_identifier_in_file(
-                        file_name=file_name,
-                        unique_format_identifier=DnaKitFileUniqueIdentifier.ANCESTRY
-                ):
-                    dna_inbred_estimate_tmp = InbredEstimateAncestry()
-                else:
-                    raise ValueError("Text file format is not supported.")
+            if (
+                    self.__is_format_identifier_in_file(
+                    file_name=file_name,
+                    unique_format_identifier=DnaKitFileUniqueIdentifier.ANCESTRY
+                    ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimateAncestry)
+            ):
+                dna_inbred_estimate_tmp = InbredEstimateAncestry()
+            else:
+                raise ValueError("Text file format is not supported.")
         else:
             raise ValueError("File type is not supported. Use either .csv or .txt")
         self.__dna_inbred_estimate = dna_inbred_estimate_tmp
