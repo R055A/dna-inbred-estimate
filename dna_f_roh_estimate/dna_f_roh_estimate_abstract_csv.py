@@ -9,10 +9,10 @@ class InbredEstimateAbstractCsv(InbredEstimateAbstract):
     """
 
     def __init__(
-            self,
-            file_name: str | None = None,
-            headers: list[str] | None = None,
-            invalid_alleles: set[str] | None = None
+        self,
+        file_name: str | None = None,
+        headers: list[str] | None = None,
+        invalid_alleles: set[str] | None = None,
     ) -> None:
         """
         Class constructor for instantiating an F_ROH estimator instance for .csv format DNA kit data.
@@ -20,7 +20,9 @@ class InbredEstimateAbstractCsv(InbredEstimateAbstract):
         :param headers: List of format-specific genotype header names in addition to [RSID, CHROMOSOME, POSITION].
         :param invalid_alleles: Allele file entries which are not valid for F_ROH analysis.
         """
-        super().__init__(file_name=file_name, headers=headers, invalid_alleles=invalid_alleles)
+        super().__init__(
+            file_name=file_name, headers=headers, invalid_alleles=invalid_alleles
+        )
 
     def _split_data_row(self, data_row: str) -> list[str]:
         """
@@ -42,7 +44,9 @@ class InbredEstimateAbstractCsv(InbredEstimateAbstract):
                 yield data_row
 
     @abstractmethod
-    def _get_alleles_data(self, header: dict[str, int], data_row: list[str]) -> list[str | None]:
+    def _get_alleles_data(
+        self, header: dict[str, int], data_row: list[str]
+    ) -> list[str | None]:
         """
         Get allele values from a parsed data row read from .csv DNA kit file.
         :param header: Normalized genotype header names mapped to data column indexes.

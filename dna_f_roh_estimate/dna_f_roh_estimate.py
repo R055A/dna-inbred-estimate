@@ -46,8 +46,7 @@ class InbredEstimate:
         return None
 
     def __is_format_identifier_in_file(
-            self, file_name: str,
-            unique_format_identifier: DnaKitFileUniqueIdentifier
+        self, file_name: str, unique_format_identifier: DnaKitFileUniqueIdentifier
     ) -> bool:
         """
         Conditional for if a unique identifier exists in the first row of a data file to verify DNA kit format.
@@ -55,7 +54,9 @@ class InbredEstimate:
         :param unique_format_identifier: The unique identifier word(s) in the first row of the DNA data file.
         :return: True if the first row of a data file contains the unique identifier word(s); otherwise False.
         """
-        return unique_format_identifier.value in read_data_file_first_line(file_name=file_name)
+        return unique_format_identifier.value in read_data_file_first_line(
+            file_name=file_name
+        )
 
     def read_dna_data_file(self, file_name: str) -> list[tuple[int, int, bool]]:
         """
@@ -70,31 +71,33 @@ class InbredEstimate:
         :param file_name: The name of the DNA data file.
         :return: Parsed DNA autosomal SNP data formatted into tuples of chromosome, base-pair position, homozygosity.
         """
-        dna_inbred_estimate_tmp: InbredEstimateAbstract | None = self.__dna_inbred_estimate
+        dna_inbred_estimate_tmp: InbredEstimateAbstract | None = (
+            self.__dna_inbred_estimate
+        )
         if file_name.endswith(".csv"):
-            if (
-                    self.__is_format_identifier_in_file(
-                    file_name=file_name,
-                    unique_format_identifier=DnaKitFileUniqueIdentifier.MY_HERITAGE
-                    ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimateMyHeritage)
-            ):
+            if self.__is_format_identifier_in_file(
+                file_name=file_name,
+                unique_format_identifier=DnaKitFileUniqueIdentifier.MY_HERITAGE,
+            ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimateMyHeritage):
                 dna_inbred_estimate_tmp = InbredEstimateMyHeritage()
             elif not isinstance(dna_inbred_estimate_tmp, InbredEstimateMyHeritage):
                 raise ValueError("CSV file format is not supported.")
         elif file_name.endswith(".txt"):
-            if (
-                    self.__is_format_identifier_in_file(
-                    file_name=file_name,
-                    unique_format_identifier=DnaKitFileUniqueIdentifier.ANCESTRY
-                    ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimateAncestry)
-            ):
+            if self.__is_format_identifier_in_file(
+                file_name=file_name,
+                unique_format_identifier=DnaKitFileUniqueIdentifier.ANCESTRY,
+            ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimateAncestry):
                 dna_inbred_estimate_tmp = InbredEstimateAncestry()
             elif not isinstance(dna_inbred_estimate_tmp, InbredEstimateAncestry):
                 raise ValueError("Text file format is not supported.")
         else:
             raise ValueError("File type is not supported. Use either .csv or .txt")
         self.__dna_inbred_estimate = dna_inbred_estimate_tmp
-        return self.__dna_inbred_estimate.read_dna_data_file(file_name=file_name) if self.__dna_inbred_estimate else []
+        return (
+            self.__dna_inbred_estimate.read_dna_data_file(file_name=file_name)
+            if self.__dna_inbred_estimate
+            else []
+        )
 
     def compute_f_roh_estimate(
         self,
@@ -102,7 +105,7 @@ class InbredEstimate:
         roh_min_base_pair_len: int = InbredEstimateAbstract.BASE_PAIRS_PER_MB,
         roh_max_base_pair_range: int = InbredEstimateAbstract.BASE_PAIRS_PER_MB,
         snp_max_heterozygous: int = 1,
-        snp_max_avg_range_kb: int = 50
+        snp_max_avg_range_kb: int = 50,
     ) -> None:
         """
         Compute F_ROH from parsed autosomal DNA data file for estimating inbreeding/shared-ancestry coefficient score.
@@ -118,5 +121,5 @@ class InbredEstimate:
                 roh_min_base_pair_len=roh_min_base_pair_len,
                 roh_max_base_pair_range=roh_max_base_pair_range,
                 snp_max_heterozygous=snp_max_heterozygous,
-                snp_max_avg_range_kb=snp_max_avg_range_kb
+                snp_max_avg_range_kb=snp_max_avg_range_kb,
             )

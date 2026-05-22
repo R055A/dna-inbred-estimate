@@ -11,6 +11,12 @@ Supported DNA kit file formats:
 * MyHeritage.com (format v1)
 * __TODO__: [test more formats](https://github.com/R055A/dna-inbred-estimate/issues/1)
 
+## Install
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Run
 
 ```bash
@@ -21,4 +27,16 @@ python dna_inbred_estimate.py -file <file-name>
 
 ```bash
 python dna_inbred_estimate.py -help
+```
+
+## Contribute
+
+Run the following code formatting before making a PR:
+
+```bash
+black .
+```
+
+```bash
+ruff check .
 ```

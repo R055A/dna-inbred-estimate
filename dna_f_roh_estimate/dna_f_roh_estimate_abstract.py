@@ -12,10 +12,10 @@ class InbredEstimateAbstract(ABC):
     BASE_PAIRS_PER_MB: int = 1_000_000
 
     def __init__(
-            self,
-            file_name: str | None = None,
-            headers: list[str] | None = None,
-            invalid_alleles: set[str] | None = None
+        self,
+        file_name: str | None = None,
+        headers: list[str] | None = None,
+        invalid_alleles: set[str] | None = None,
     ) -> None:
         """
         Class constructor for instantiating an F_ROH estimator instance with optional file name and genotype headers.
@@ -26,7 +26,9 @@ class InbredEstimateAbstract(ABC):
         self.__invalid_alleles: set[str] = invalid_alleles if invalid_alleles else set()
         self.__snp_genotypes: list[tuple[int, int, bool]] = []
         self.__f_roh_data: DataFROH | None = None
-        self._headers: list[str] = [h.value for h in DnaKitFileHeaderAbstract] + (headers or [])
+        self._headers: list[str] = [h.value for h in DnaKitFileHeaderAbstract] + (
+            headers or []
+        )
         if file_name:
             self.read_dna_data_file(file_name=file_name)
 
@@ -57,7 +59,9 @@ class InbredEstimateAbstract(ABC):
         pass
 
     @abstractmethod
-    def _get_alleles_data(self, header: dict[str, int], data_row: list[str]) -> list[str | None]:
+    def _get_alleles_data(
+        self, header: dict[str, int], data_row: list[str]
+    ) -> list[str | None]:
         """
         Get allele values from a parsed data row relevant to a subclass file format.
         :param header: Normalized genotype header names mapped to data column indexes.
@@ -66,28 +70,38 @@ class InbredEstimateAbstract(ABC):
         """
         pass
 
-    def __get_autosomal_chromosome_num(self, header: dict[str, int], data_row: list[str]) -> int | None:
+    def __get_autosomal_chromosome_num(
+        self, header: dict[str, int], data_row: list[str]
+    ) -> int | None:
         """
         Get and validate an autosomal chromosome number from a parsed data row. Autosomal is between 1 and 22 (not sex).
         :param header: Normalized genotype header names mapped to data column indexes.
         :param data_row: List of parsed data rows from the DNA kit file.
         :return: Autosomal chromosome number between 1 and 22, or None if invalid.
         """
-        chromosome = data_row[header[DnaKitFileHeaderAbstract.HEADER_CHROMOSOME.value]].strip().upper()
+        chromosome = (
+            data_row[header[DnaKitFileHeaderAbstract.HEADER_CHROMOSOME.value]]
+            .strip()
+            .upper()
+        )
         if chromosome.isdigit():
             chromosome = int(chromosome)
             if 1 <= chromosome <= 22:
                 return chromosome
         return None
 
-    def __get_base_pair_position_num(self, header: dict[str, int], data_row: list[str]) -> int | None:
+    def __get_base_pair_position_num(
+        self, header: dict[str, int], data_row: list[str]
+    ) -> int | None:
         """
         Get and validate the base-pair position number from a parsed data row.
         :param header: Normalized genotype header names mapped to data column indexes.
         :param data_row: List of parsed data rows from the DNA kit file.
         :return: Base-pair position value, or None if invalid.
         """
-        position = data_row[header[DnaKitFileHeaderAbstract.HEADER_POSITION.value]].strip()
+        position = data_row[
+            header[DnaKitFileHeaderAbstract.HEADER_POSITION.value]
+        ].strip()
         if position.isdigit():
             return int(position)
         return None
@@ -101,9 +115,9 @@ class InbredEstimateAbstract(ABC):
         return alleles_data not in self.__invalid_alleles
 
     def __init_data(
-            self,
-            snp_genotypes: list[tuple[int, int, bool]],
-            snp_invalid_cnt: int,
+        self,
+        snp_genotypes: list[tuple[int, int, bool]],
+        snp_invalid_cnt: int,
     ) -> None:
         """
         Store initial SNP data from the parsed DNA kit file for F_ROH analysis.
@@ -111,16 +125,20 @@ class InbredEstimateAbstract(ABC):
         :param snp_invalid_cnt: Count of invalid autosomal SNP genotypes excluded from F_ROH analysis.
         """
         snp_autosomal_cnt_ttl = len(snp_genotypes)
-        snp_homozygous_cnt = sum(1 for _, _, is_homozygous in snp_genotypes if is_homozygous)
+        snp_homozygous_cnt = sum(
+            1 for _, _, is_homozygous in snp_genotypes if is_homozygous
+        )
         snp_heterozygous_cnt = snp_autosomal_cnt_ttl - snp_homozygous_cnt
         self.__f_roh_data = DataFROH(
             snp_autosomal_cnt_ttl=snp_autosomal_cnt_ttl,
             snp_homozygous_cnt=snp_homozygous_cnt,
             snp_heterozygous_cnt=snp_heterozygous_cnt,
-            snp_invalid_cnt=snp_invalid_cnt
+            snp_invalid_cnt=snp_invalid_cnt,
         )
 
-    def __parse_dna_data(self, header: dict[str, int], data_rows: list[str]) -> list[tuple[int, int, bool]]:
+    def __parse_dna_data(
+        self, header: dict[str, int], data_rows: list[str]
+    ) -> list[tuple[int, int, bool]]:
         """
         Parse DNA kit data for F_ROH analysis of autosomal SNP genotypes in the following format:
         [
@@ -137,17 +155,25 @@ class InbredEstimateAbstract(ABC):
         snp_genotypes: list[tuple[int, int, bool]] = []
         snp_invalid_cnt: int = 0
         for data_row in self._iter_data_rows(header=header, data_rows=data_rows):
-            autosomal_chromosome: int | None = self.__get_autosomal_chromosome_num(header=header, data_row=data_row)
+            autosomal_chromosome: int | None = self.__get_autosomal_chromosome_num(
+                header=header, data_row=data_row
+            )
             if not autosomal_chromosome:
                 continue
-            position: int | None = self.__get_base_pair_position_num(header=header, data_row=data_row)
+            position: int | None = self.__get_base_pair_position_num(
+                header=header, data_row=data_row
+            )
             if not position:
                 continue
-            alleles_one, alleles_two = self._get_alleles_data(header=header, data_row=data_row)[:2]
+            alleles_one, alleles_two = self._get_alleles_data(
+                header=header, data_row=data_row
+            )[:2]
             if not alleles_one or not alleles_two:
                 snp_invalid_cnt += 1
                 continue
-            snp_genotypes.append((autosomal_chromosome, position, alleles_one == alleles_two))
+            snp_genotypes.append(
+                (autosomal_chromosome, position, alleles_one == alleles_two)
+            )
         snp_genotypes.sort(key=lambda snp: (snp[0], snp[1]))
         self.__init_data(
             snp_genotypes=snp_genotypes,
@@ -173,19 +199,21 @@ class InbredEstimateAbstract(ABC):
             cols = [c.strip().upper() for c in self._split_data_row(data_row=line)]
             if all(col.upper() in cols for col in self._headers):
                 self.__snp_genotypes = self.__parse_dna_data(
-                    header={col.upper(): cols.index(col.upper()) for col in self._headers},
-                    data_rows=file_lines[i + 1:]
+                    header={
+                        col.upper(): cols.index(col.upper()) for col in self._headers
+                    },
+                    data_rows=file_lines[i + 1 :],
                 )
                 return self.__snp_genotypes
         raise ValueError("Data format is not supported.")
 
     def __is_valid_roh(
-            self,
-            length_base_pair: int,
-            snp_count: int,
-            roh_min_base_pair_len: int,
-            roh_min_snp_cnt: int,
-            snp_max_avg_range_kb: int,
+        self,
+        length_base_pair: int,
+        snp_count: int,
+        roh_min_base_pair_len: int,
+        roh_min_snp_cnt: int,
+        snp_max_avg_range_kb: int,
     ) -> bool:
         """
         Conditional for if a candidate homozygous satisfies valid ROH thresholds.
@@ -203,10 +231,10 @@ class InbredEstimateAbstract(ABC):
         )
 
     def __is_valid_roh_base_pair_range(
-            self,
-            base_pair_position: int,
-            prev_position: int | None,
-            roh_max_base_pair_range: int,
+        self,
+        base_pair_position: int,
+        prev_position: int | None,
+        roh_max_base_pair_range: int,
     ) -> bool:
         """
         Conditional for if the base-pair range between adjacent SNP genotypes in ROH is valid.
@@ -215,12 +243,15 @@ class InbredEstimateAbstract(ABC):
         :param roh_max_base_pair_range: Maximum valid base-pair range between adjacent SNP genotypes in candidate ROH.
         :return: True if the base-pair range between adjacent SNP genotypes in ROH is valid; otherwise False.
         """
-        return not (prev_position is not None and base_pair_position - prev_position > roh_max_base_pair_range)
+        return not (
+            prev_position is not None
+            and base_pair_position - prev_position > roh_max_base_pair_range
+        )
 
     def __compute_autosomal_chromosome_range(
-            self,
-            snp_pos_first: dict[int, int],
-            snp_pos_last: dict[int, int],
+        self,
+        snp_pos_first: dict[int, int],
+        snp_pos_last: dict[int, int],
     ) -> int:
         """
         Compute base-pair autosomal chromosome range.
@@ -234,10 +265,10 @@ class InbredEstimateAbstract(ABC):
         )
 
     def __set_roh_data(
-            self,
-            roh_cnt: int,
-            roh_base_pairs_ttl: int,
-            autosomal_chromosome_range: int,
+        self,
+        roh_cnt: int,
+        roh_base_pairs_ttl: int,
+        autosomal_chromosome_range: int,
     ) -> None:
         """
         Store computed ROH analysis summary data with F_ROH estimate score and percentage.
@@ -247,17 +278,21 @@ class InbredEstimateAbstract(ABC):
         """
         self.__f_roh_data.roh_cnt = roh_cnt
         self.__f_roh_data.roh_len_ttl_mb = roh_base_pairs_ttl / self.BASE_PAIRS_PER_MB
-        self.__f_roh_data.denominator_mb = autosomal_chromosome_range / self.BASE_PAIRS_PER_MB
+        self.__f_roh_data.denominator_mb = (
+            autosomal_chromosome_range / self.BASE_PAIRS_PER_MB
+        )
         self.__f_roh_data.f_roh = roh_base_pairs_ttl / autosomal_chromosome_range
-        self.__f_roh_data.f_roh_percent = (roh_base_pairs_ttl / autosomal_chromosome_range) * 100
+        self.__f_roh_data.f_roh_percent = (
+            roh_base_pairs_ttl / autosomal_chromosome_range
+        ) * 100
 
     def compute_f_roh_estimate(
-            self,
-            roh_min_snp_cnt: int = 100,
-            roh_min_base_pair_len: int = BASE_PAIRS_PER_MB,
-            roh_max_base_pair_range: int = BASE_PAIRS_PER_MB,
-            snp_max_heterozygous: int = 1,
-            snp_max_avg_range_kb: int = 50
+        self,
+        roh_min_snp_cnt: int = 100,
+        roh_min_base_pair_len: int = BASE_PAIRS_PER_MB,
+        roh_max_base_pair_range: int = BASE_PAIRS_PER_MB,
+        snp_max_heterozygous: int = 1,
+        snp_max_avg_range_kb: int = 50,
     ) -> None:
         """
         Compute F_ROH from parsed autosomal DNA data file for estimating inbreeding/shared-ancestry coefficient score.
@@ -269,7 +304,12 @@ class InbredEstimateAbstract(ABC):
         """
         if not self.__snp_genotypes:
             raise AssertionError("Missing parsed DNA data.")
-        candidate_start, candidate_end, candidate_count, candidate_heterozygous_count = None, None, 0, 0
+        (
+            candidate_start,
+            candidate_end,
+            candidate_count,
+            candidate_heterozygous_count,
+        ) = (None, None, 0, 0)
         roh_cnt, roh_base_pairs_ttl = 0, 0
 
         def validate_candidate_roh():
@@ -290,11 +330,20 @@ class InbredEstimateAbstract(ABC):
                 ):
                     roh_base_pairs_ttl += length_base_pair
                     roh_cnt += 1
-                candidate_start, candidate_end, candidate_count, candidate_heterozygous_count = None, None, 0, 0
+                (
+                    candidate_start,
+                    candidate_end,
+                    candidate_count,
+                    candidate_heterozygous_count,
+                ) = (None, None, 0, 0)
 
         snp_pos_first, snp_pos_last = {}, {}
         cur_chromosome, prev_position = None, None
-        for autosomal_chromosome, base_pair_position, is_homozygous in self.__snp_genotypes:
+        for (
+            autosomal_chromosome,
+            base_pair_position,
+            is_homozygous,
+        ) in self.__snp_genotypes:
             if autosomal_chromosome not in snp_pos_first:
                 snp_pos_first[autosomal_chromosome] = base_pair_position
             snp_pos_last[autosomal_chromosome] = base_pair_position
@@ -305,19 +354,26 @@ class InbredEstimateAbstract(ABC):
                 validate_candidate_roh()
 
             if not self.__is_valid_roh_base_pair_range(
-                    base_pair_position=base_pair_position,
-                    prev_position=prev_position,
-                    roh_max_base_pair_range=roh_max_base_pair_range,
+                base_pair_position=base_pair_position,
+                prev_position=prev_position,
+                roh_max_base_pair_range=roh_max_base_pair_range,
             ):
                 validate_candidate_roh()
             prev_position = base_pair_position
 
-            if not is_homozygous and (candidate_start is None or candidate_heterozygous_count >= snp_max_heterozygous):
+            if not is_homozygous and (
+                candidate_start is None
+                or candidate_heterozygous_count >= snp_max_heterozygous
+            ):
                 validate_candidate_roh()
                 continue
             elif is_homozygous and candidate_start is None:
                 candidate_start = base_pair_position
-            elif not is_homozygous and candidate_start is not None and candidate_heterozygous_count < snp_max_heterozygous:
+            elif (
+                not is_homozygous
+                and candidate_start is not None
+                and candidate_heterozygous_count < snp_max_heterozygous
+            ):
                 candidate_heterozygous_count += 1
             candidate_end = base_pair_position
             candidate_count += 1
