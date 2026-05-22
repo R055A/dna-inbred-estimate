@@ -10,26 +10,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  format-check:
+  build:
+
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v6
 
-      - name: Setup
-        uses: ./.github/actions/setup
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
 
-      - name: Run
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Format
         run: black --check --diff .
 
-  lint-check:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Run
+      - name: Lint
         run: ruff check --output-format=github .
