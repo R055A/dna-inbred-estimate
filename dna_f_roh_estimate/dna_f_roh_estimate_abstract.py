@@ -15,7 +15,7 @@ class InbredEstimateAbstract(ABC):
             self,
             file_name: str | None = None,
             headers: list[str] | None = None,
-            invalid_alleles: tuple[str] | None = None
+            invalid_alleles: set[str] | None = None
     ) -> None:
         """
         Class constructor for instantiating an F_ROH estimator instance with optional file name and genotype headers.
@@ -23,10 +23,10 @@ class InbredEstimateAbstract(ABC):
         :param headers: List of format-specific genotype header names in addition to [RSID, CHROMOSOME, POSITION].
         :param invalid_alleles: Allele file entries which are not valid for F_ROH analysis.
         """
-        self.__invalid_alleles: tuple[str] = invalid_alleles if invalid_alleles else tuple()
+        self.__invalid_alleles: set[str] = invalid_alleles if invalid_alleles else set()
         self.__snp_genotypes: list[tuple[int, int, bool]] = []
         self.__f_roh_data: DataFROH | None = None
-        self._headers: list[str] = [h.value for h in DnaKitFileHeaderAbstract] + headers if headers else []
+        self._headers: list[str] = [h.value for h in DnaKitFileHeaderAbstract] + (headers or [])
         if file_name:
             self.read_dna_data_file(file_name=file_name)
 
@@ -168,7 +168,7 @@ class InbredEstimateAbstract(ABC):
         :param file_name: Path name to a supported DNA kit data file.
         :return: Parsed DNA autosomal SNP data formatted into tuples of chromosome, base-pair position, homozygosity.
         """
-        file_lines: list[str] = open_data_file(file_name=file_name).splitlines()
+        file_lines: list[str] = open_data_file(file_name=file_name)
         for i, line in enumerate(file_lines):
             cols = [c.strip().upper() for c in self._split_data_row(data_row=line)]
             if all(col.upper() in cols for col in self._headers):

@@ -11,7 +11,7 @@ class InbredEstimateAbstractTxt(InbredEstimateAbstract):
             self,
             file_name: str | None = None,
             headers: list[str] | None = None,
-            invalid_alleles: tuple[str] | None = None
+            invalid_alleles: set[str] | None = None
     ) -> None:
         """
         Class constructor for instantiating an F_ROH estimator instance for .txt format DNA kit data.

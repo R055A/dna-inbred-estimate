@@ -7,7 +7,7 @@ class InbredEstimateAncestry(InbredEstimateAbstractTxt):
     Estimate F_ROH score, representing inbreeding/shared ancestry coefficient score, from Ancestry.com DNA kit data.
     """
 
-    __INVALID_ALLELES: tuple[str] = {"0"}  # There are likely more invalid entries yet to be discovered in more files
+    __INVALID_ALLELES: set[str] = {"0"}  # There are likely more invalid entries yet to be discovered in more files
 
     def __init__(self, file_name: str | None = None) -> None:
         """

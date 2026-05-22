@@ -14,3 +14,8 @@ class DnaKitFileHeaderAncestry(Enum):
 
 class DnaKitFileHeaderMyHeritage(Enum):
     HEADER_RESULT = "RESULT"
+
+
+class DnaKitFileUniqueIdentifier(Enum):
+    ANCESTRY = "AncestryDNA"
+    MY_HERITAGE = "MyHeritage"

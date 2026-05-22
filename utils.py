@@ -42,6 +42,6 @@ def parse_args() -> Namespace:
     return parser.parse_args()
 
 
-def open_data_file(file_name: str) -> str:
+def open_data_file(file_name: str) -> list[str]:
     with open(file_name, "r", encoding="utf-8-sig") as f:
-        return f.read()
+        return f.read().splitlines()

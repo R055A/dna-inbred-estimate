@@ -7,7 +7,7 @@ class InbredEstimateMyHeritage(InbredEstimateAbstractCsv):
     Estimate F_ROH score, representing inbreeding/shared ancestry coefficient score, from MyHeritage.com DNA kit data.
     """
 
-    __INVALID_ALLELES: tuple[str] = {"--"}  # There are likely more invalid entries yet to be discovered in more files
+    __INVALID_ALLELES: set[str] = {"--"}  # There are likely more invalid entries yet to be discovered in more files
 
     def __init__(self, file_name: str | None = None) -> None:
         """
