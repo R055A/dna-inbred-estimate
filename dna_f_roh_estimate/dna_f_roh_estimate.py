@@ -25,25 +25,57 @@ class InbredEstimate:
         """
         :return: F_ROH analysis summary data in string format, or an empty string if no data is available.
         """
-        if self.__dna_inbred_estimate and self.__dna_inbred_estimate.data:
-            return self.__dna_inbred_estimate.data.__repr__()
+        if self.__dna_inbred_estimate and self.__dna_inbred_estimate.f_roh_data:
+            return self.__dna_inbred_estimate.f_roh_data.__repr__()
         return ""
 
     def __iter__(self) -> Iterator[tuple[str, int | float | None]]:
         """
         :return: F_ROH analysis summary data in dictionary format, or an empty dictionary if no data is available.
         """
-        if self.__dna_inbred_estimate and self.__dna_inbred_estimate.data:
-            yield from self.__dna_inbred_estimate.data
+        if self.__dna_inbred_estimate and self.__dna_inbred_estimate.f_roh_data:
+            yield from self.__dna_inbred_estimate.f_roh_data
 
     @property
-    def data(self) -> DataFROH | None:
+    def f_roh_data(self) -> DataFROH | None:
         """
         :return: Data from F_ROH analysis.
         """
-        if self.__dna_inbred_estimate and self.__dna_inbred_estimate.data:
-            return self.__dna_inbred_estimate.data
+        if self.__dna_inbred_estimate and self.__dna_inbred_estimate.f_roh_data:
+            return self.__dna_inbred_estimate.f_roh_data
         return None
+
+    @property
+    def snp_data(self) -> list[tuple[int, int, bool]]:
+        """
+        :return: Parsed DNA autosomal SNP data formatted into tuples of chromosome, base-pair position, homozygosity:
+        [
+            {
+                autosomal_chromosome: int,
+                base_pair_position: int,
+                is_homozygous: bool
+            }
+        ]
+        """
+        if self.__dna_inbred_estimate:
+            return self.__dna_inbred_estimate.snp_data
+        return []
+
+    @snp_data.setter
+    def snp_data(self, snp_data: list[tuple[int, int, bool]]) -> None:
+        """
+        Set parsed DNA autosomal SNP data for F_ROH analysis.
+        :param snp_data: parsed SNP data formatted into tuples of chromosome, base-pair position, homozygosity:
+        [
+            {
+                autosomal_chromosome: int,
+                base_pair_position: int,
+                is_homozygous: bool
+            }
+        ]
+        """
+        if self.__dna_inbred_estimate:
+            self.__dna_inbred_estimate.snp_data = snp_data
 
     def __is_format_identifier_in_file(
         self, file_name: str, unique_format_identifier: DnaKitFileUniqueIdentifier

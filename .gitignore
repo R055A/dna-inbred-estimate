@@ -1,3 +1,8 @@
+# Prevent DNA kit data files pushed to remote, keep requirements.txt
+*.txt
+*.csv
+!requirements.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

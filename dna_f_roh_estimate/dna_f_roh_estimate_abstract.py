@@ -24,7 +24,7 @@ class InbredEstimateAbstract(ABC):
         :param invalid_alleles: Allele file entries which are not valid for F_ROH analysis.
         """
         self.__invalid_alleles: set[str] = invalid_alleles if invalid_alleles else set()
-        self.__snp_genotypes: list[tuple[int, int, bool]] = []
+        self.__snp_data: list[tuple[int, int, bool]] = []
         self.__f_roh_data: DataFROH | None = None
         self._headers: list[str] = [h.value for h in DnaKitFileHeaderAbstract] + (
             headers or []
@@ -33,11 +33,40 @@ class InbredEstimateAbstract(ABC):
             self.read_dna_data_file(file_name=file_name)
 
     @property
-    def data(self) -> DataFROH | None:
+    def f_roh_data(self) -> DataFROH | None:
         """
         :return: Data from F_ROH analysis.
         """
         return self.__f_roh_data
+
+    @property
+    def snp_data(self) -> list[tuple[int, int, bool]]:
+        """
+        :return: Parsed DNA autosomal SNP data formatted into tuples of chromosome, base-pair position, homozygosity:
+        [
+            {
+                autosomal_chromosome: int,
+                base_pair_position: int,
+                is_homozygous: bool
+            }
+        ]
+        """
+        return self.__snp_data
+
+    @snp_data.setter
+    def snp_data(self, snp_data: list[tuple[int, int, bool]]) -> None:
+        """
+        Set parsed DNA autosomal SNP data for F_ROH analysis.
+        :param snp_data: parsed SNP data formatted into tuples of chromosome, base-pair position, homozygosity:
+        [
+            {
+                autosomal_chromosome: int,
+                base_pair_position: int,
+                is_homozygous: bool
+            }
+        ]
+        """
+        self.__snp_data = snp_data
 
     @abstractmethod
     def _split_data_row(self, data_row: str) -> list[str]:
@@ -198,13 +227,13 @@ class InbredEstimateAbstract(ABC):
         for i, line in enumerate(file_lines):
             cols = [c.strip().upper() for c in self._split_data_row(data_row=line)]
             if all(col.upper() in cols for col in self._headers):
-                self.__snp_genotypes = self.__parse_dna_data(
+                self.__snp_data = self.__parse_dna_data(
                     header={
                         col.upper(): cols.index(col.upper()) for col in self._headers
                     },
                     data_rows=file_lines[i + 1 :],
                 )
-                return self.__snp_genotypes
+                return self.__snp_data
         raise ValueError("Data format is not supported.")
 
     def __is_valid_roh(
@@ -302,7 +331,7 @@ class InbredEstimateAbstract(ABC):
         :param snp_max_heterozygous: Maximum number of heterozygous SNP genotypes in a valid candidate ROH segment.
         :param snp_max_avg_range_kb: Maximum avg range between adjacent SNP genotypes in a candidate ROH segment in Kb.
         """
-        if not self.__snp_genotypes:
+        if not self.__snp_data:
             raise AssertionError("Missing parsed DNA data.")
         (
             candidate_start,
@@ -343,7 +372,7 @@ class InbredEstimateAbstract(ABC):
             autosomal_chromosome,
             base_pair_position,
             is_homozygous,
-        ) in self.__snp_genotypes:
+        ) in self.__snp_data:
             if autosomal_chromosome not in snp_pos_first:
                 snp_pos_first[autosomal_chromosome] = base_pair_position
             snp_pos_last[autosomal_chromosome] = base_pair_position
