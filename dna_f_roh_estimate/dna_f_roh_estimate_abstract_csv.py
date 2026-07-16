@@ -1,4 +1,5 @@
 from dna_f_roh_estimate.dna_f_roh_estimate_abstract import InbredEstimateAbstract
+from dna_f_roh_estimate.dna_f_roh_enum import DnaKitFileInvalidAllelesSymbol
 from abc import abstractmethod
 from csv import reader
 
@@ -12,7 +13,7 @@ class InbredEstimateAbstractCsv(InbredEstimateAbstract):
         self,
         file_name: str | None = None,
         headers: list[str] | None = None,
-        invalid_alleles: set[str] | None = None,
+        invalid_alleles: set[DnaKitFileInvalidAllelesSymbol] | None = None,
     ) -> None:
         """
         Class constructor for instantiating an F_ROH estimator instance for .csv format DNA kit data.
