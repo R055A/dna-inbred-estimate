@@ -16,6 +16,16 @@ class DnaKitFileHeaderMyHeritage(Enum):
     HEADER_RESULT = "RESULT"
 
 
+class DnaKitFileHeader23AndMe(Enum):
+    HEADER_GENOTYPE = "GENOTYPE"
+
+
 class DnaKitFileUniqueIdentifier(Enum):
     ANCESTRY = "AncestryDNA"
     MY_HERITAGE = "MyHeritage"
+    TWENTY_THREE_AND_ME = "23andMe"
+
+
+class DnaKitFileInvalidAllelesSymbol(Enum):
+    ZERO = "0"
+    DASH = "--"

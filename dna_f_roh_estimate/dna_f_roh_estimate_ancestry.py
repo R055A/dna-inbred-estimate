@@ -1,5 +1,5 @@
+from dna_f_roh_estimate.dna_f_roh_enum import DnaKitFileHeaderAncestry, DnaKitFileInvalidAllelesSymbol
 from dna_f_roh_estimate.dna_f_roh_estimate_abstract_txt import InbredEstimateAbstractTxt
-from dna_f_roh_estimate.dna_f_roh_enum import DnaKitFileHeaderAncestry
 
 
 class InbredEstimateAncestry(InbredEstimateAbstractTxt):
@@ -7,8 +7,8 @@ class InbredEstimateAncestry(InbredEstimateAbstractTxt):
     Estimate F_ROH score, representing inbreeding/shared ancestry coefficient score, from Ancestry.com DNA kit data.
     """
 
-    __INVALID_ALLELES: set[str] = {
-        "0"
+    __INVALID_ALLELES: set[DnaKitFileInvalidAllelesSymbol] = {
+        DnaKitFileInvalidAllelesSymbol.ZERO
     }  # There are likely more invalid entries yet to be discovered in more files
 
     def __init__(self, file_name: str | None = None) -> None:

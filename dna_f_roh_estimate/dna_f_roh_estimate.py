@@ -1,9 +1,10 @@
+from dna_f_roh_estimate.dna_f_roh_estimate_23_and_me import InbredEstimate23AndMe
 from dna_f_roh_estimate.dna_f_roh_estimate_my_heritage import InbredEstimateMyHeritage
 from dna_f_roh_estimate.dna_f_roh_estimate_ancestry import InbredEstimateAncestry
 from dna_f_roh_estimate.dna_f_roh_estimate_abstract import InbredEstimateAbstract
 from dna_f_roh_estimate.dna_f_roh_enum import DnaKitFileUniqueIdentifier
 from dna_f_roh_estimate.dna_f_roh_data import DataFROH
-from utils import read_data_file_first_line
+from utils import read_data_file_first_line, read_data_file_first_five_lines
 from typing import Iterator
 
 
@@ -86,7 +87,7 @@ class InbredEstimate:
         :param unique_format_identifier: The unique identifier word(s) in the first row of the DNA data file.
         :return: True if the first row of a data file contains the unique identifier word(s); otherwise False.
         """
-        return unique_format_identifier.value in read_data_file_first_line(
+        return unique_format_identifier.value in read_data_file_first_five_lines(
             file_name=file_name
         )
 
@@ -120,7 +121,15 @@ class InbredEstimate:
                 unique_format_identifier=DnaKitFileUniqueIdentifier.ANCESTRY,
             ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimateAncestry):
                 dna_inbred_estimate_tmp = InbredEstimateAncestry()
-            elif not isinstance(dna_inbred_estimate_tmp, InbredEstimateAncestry):
+            elif self.__is_format_identifier_in_file(
+                file_name=file_name,
+                unique_format_identifier=DnaKitFileUniqueIdentifier.TWENTY_THREE_AND_ME,
+            ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimate23AndMe):
+                dna_inbred_estimate_tmp = InbredEstimate23AndMe()
+            elif (
+                not isinstance(dna_inbred_estimate_tmp, InbredEstimateAncestry)
+                and not isinstance(dna_inbred_estimate_tmp, InbredEstimate23AndMe)
+            ):
                 raise ValueError("Text file format is not supported.")
         else:
             raise ValueError("File type is not supported. Use either .csv or .txt")
