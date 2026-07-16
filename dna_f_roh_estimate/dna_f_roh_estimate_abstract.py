@@ -1,4 +1,7 @@
-from dna_f_roh_estimate.dna_f_roh_enum import DnaKitFileHeaderAbstract, DnaKitFileInvalidAllelesSymbol
+from dna_f_roh_estimate.dna_f_roh_enum import (
+    DnaKitFileHeaderAbstract,
+    DnaKitFileInvalidAllelesSymbol,
+)
 from dna_f_roh_estimate.dna_f_roh_data import DataFROH
 from utils import read_data_file_all_lines
 from abc import abstractmethod, ABC
@@ -23,7 +26,9 @@ class InbredEstimateAbstract(ABC):
         :param headers: List of format-specific genotype header names in addition to [RSID, CHROMOSOME, POSITION].
         :param invalid_alleles: Allele file entries which are not valid for F_ROH analysis.
         """
-        self.__invalid_alleles: set[DnaKitFileInvalidAllelesSymbol] = invalid_alleles if invalid_alleles else set()
+        self.__invalid_alleles: set[DnaKitFileInvalidAllelesSymbol] = (
+            invalid_alleles if invalid_alleles else set()
+        )
         self.__snp_data: list[tuple[int, int, bool]] = []
         self.__f_roh_data: DataFROH | None = None
         self._headers: list[str] = [h.value for h in DnaKitFileHeaderAbstract] + (
@@ -225,7 +230,10 @@ class InbredEstimateAbstract(ABC):
         """
         file_lines: list[str] = read_data_file_all_lines(file_name=file_name)
         for i, line in enumerate(file_lines):
-            cols = [c.strip('#').strip().upper() for c in self._split_data_row(data_row=line)]
+            cols = [
+                c.strip("#").strip().upper()
+                for c in self._split_data_row(data_row=line)
+            ]
             if all(col.upper() in cols for col in self._headers):
                 self.__snp_data = self.__parse_dna_data(
                     header={

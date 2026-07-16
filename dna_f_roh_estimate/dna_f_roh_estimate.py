@@ -4,7 +4,7 @@ from dna_f_roh_estimate.dna_f_roh_estimate_ancestry import InbredEstimateAncestr
 from dna_f_roh_estimate.dna_f_roh_estimate_abstract import InbredEstimateAbstract
 from dna_f_roh_estimate.dna_f_roh_enum import DnaKitFileUniqueIdentifier
 from dna_f_roh_estimate.dna_f_roh_data import DataFROH
-from utils import read_data_file_first_line, read_data_file_first_five_lines
+from utils import read_data_file_first_five_lines
 from typing import Iterator
 
 
@@ -126,10 +126,9 @@ class InbredEstimate:
                 unique_format_identifier=DnaKitFileUniqueIdentifier.TWENTY_THREE_AND_ME,
             ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimate23AndMe):
                 dna_inbred_estimate_tmp = InbredEstimate23AndMe()
-            elif (
-                not isinstance(dna_inbred_estimate_tmp, InbredEstimateAncestry)
-                and not isinstance(dna_inbred_estimate_tmp, InbredEstimate23AndMe)
-            ):
+            elif not isinstance(
+                dna_inbred_estimate_tmp, InbredEstimateAncestry
+            ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimate23AndMe):
                 raise ValueError("Text file format is not supported.")
         else:
             raise ValueError("File type is not supported. Use either .csv or .txt")

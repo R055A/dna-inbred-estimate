@@ -1,4 +1,7 @@
-from dna_f_roh_estimate.dna_f_roh_enum import DnaKitFileHeader23AndMe, DnaKitFileInvalidAllelesSymbol
+from dna_f_roh_estimate.dna_f_roh_enum import (
+    DnaKitFileHeader23AndMe,
+    DnaKitFileInvalidAllelesSymbol,
+)
 from dna_f_roh_estimate.dna_f_roh_estimate_abstract_txt import InbredEstimateAbstractTxt
 
 

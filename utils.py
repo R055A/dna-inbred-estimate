@@ -49,8 +49,8 @@ def read_data_file_first_line(file_name: str) -> str:
 
 
 def read_data_file_first_five_lines(file_name: str) -> str:
-    with open(file_name, "r", encoding="utf-8-sig") as file:
-        return " ".join(line.rstrip("\r\n") for line in islice(file, 5))
+    with open(file_name, "r", encoding="utf-8-sig") as f:
+        return " ".join(line.rstrip("\r\n") for line in islice(f, 5))
 
 
 def read_data_file_all_lines(file_name: str) -> list[str]:
