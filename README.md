@@ -2,7 +2,7 @@
 
 Estimate the F_ROH representation of inbreeding/shared-ancestry from genetic DNA data kit file.
 
-* ~25.0% - Parent-child/Sibling inbreeding (example: King Charles the II of Hapsburg)
+* ~25.0% - Parent-child/Sibling inbreeding (example: King Charles II of Spain)
 * ~12.5% - First-cousin inbreeding
 * ~6.25% - Second-cousin inbreeding
 * < ~6.0% - Distant parental relatedness, endogamy
