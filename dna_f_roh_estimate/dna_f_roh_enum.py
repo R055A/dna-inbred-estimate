@@ -16,6 +16,10 @@ class DnaKitFileHeaderMyHeritage(Enum):
     HEADER_RESULT = "RESULT"
 
 
+class DnaKitFileHeaderFamilyTreeDna(Enum):
+    HEADER_RESULT = "RESULT"
+
+
 class DnaKitFileHeader23AndMe(Enum):
     HEADER_GENOTYPE = "GENOTYPE"
 
@@ -23,6 +27,7 @@ class DnaKitFileHeader23AndMe(Enum):
 class DnaKitFileUniqueIdentifier(Enum):
     ANCESTRY = "AncestryDNA"
     MY_HERITAGE = "MyHeritage"
+    FAMILY_TREE_DNA = "Family Tree DNA"
     TWENTY_THREE_AND_ME = "23andMe"
 
 

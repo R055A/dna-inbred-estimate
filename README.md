@@ -16,6 +16,7 @@ Supported DNA kit file formats:
 * Ancestry.com (array v2, converter v1)
 * MyHeritage.com (format v1)
 * 23andMe.com
+* FamilyTreeDNA.com (Family Finder Build 37)
 * __TODO__: [test more formats](https://github.com/R055A/dna-inbred-estimate/issues/1)
 
 ## Install

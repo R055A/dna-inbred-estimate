@@ -1,5 +1,8 @@
 from dna_f_roh_estimate.dna_f_roh_estimate_23_and_me import InbredEstimate23AndMe
 from dna_f_roh_estimate.dna_f_roh_estimate_my_heritage import InbredEstimateMyHeritage
+from dna_f_roh_estimate.dna_f_roh_estimate_family_tree_dna import (
+    InbredEstimateFamilyTreeDna,
+)
 from dna_f_roh_estimate.dna_f_roh_estimate_ancestry import InbredEstimateAncestry
 from dna_f_roh_estimate.dna_f_roh_estimate_abstract import InbredEstimateAbstract
 from dna_f_roh_estimate.dna_f_roh_enum import DnaKitFileUniqueIdentifier
@@ -113,7 +116,20 @@ class InbredEstimate:
                 unique_format_identifier=DnaKitFileUniqueIdentifier.MY_HERITAGE,
             ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimateMyHeritage):
                 dna_inbred_estimate_tmp = InbredEstimateMyHeritage()
-            elif not isinstance(dna_inbred_estimate_tmp, InbredEstimateMyHeritage):
+            elif (
+                self.__is_format_identifier_in_file(
+                    file_name=file_name,
+                    unique_format_identifier=DnaKitFileUniqueIdentifier.FAMILY_TREE_DNA,
+                )
+                or not self.__is_format_identifier_in_file(
+                    file_name=file_name,
+                    unique_format_identifier=DnaKitFileUniqueIdentifier.MY_HERITAGE,
+                )
+            ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimateFamilyTreeDna):
+                dna_inbred_estimate_tmp = InbredEstimateFamilyTreeDna()
+            elif not isinstance(
+                dna_inbred_estimate_tmp, InbredEstimateMyHeritage
+            ) and not isinstance(dna_inbred_estimate_tmp, InbredEstimateFamilyTreeDna):
                 raise ValueError("CSV file format is not supported.")
         elif file_name.endswith(".txt"):
             if self.__is_format_identifier_in_file(
