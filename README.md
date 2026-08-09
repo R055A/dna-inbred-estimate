@@ -1,12 +1,14 @@
 # DNA Inbred Estimate
 
-Estimate the F_ROH representation of inbreeding/shared-ancestry from genetic DNA data kit file.
+Compute F_ROH from raw genetic DNA data kit file using [PLINK](https://github.com/chrchang/plink-ng).
 
-* ~25.0% - Parent-child/Sibling inbreeding (example: King Charles II of Spain)
-* ~12.5% - First-cousin inbreeding
-* ~6.25% - Second-cousin inbreeding
-* < ~6.0% - Distant parental relatedness, endogamy
-* < ~3.0% - Ancestral endogamy, founder effect
+F_ROH estimates provide an approximate representation of genomic inbreeding or shared parental ancestry:
+ 
+* ~25.000% - Parent-child or siblings (example: King Charles II of Spain)
+* ~12.500% - Half siblings, grandparent-grandchild, uncle–niece or aunt–nephew
+* ~6.2500% - First cousins, half uncle–niece or half aunt–nephew
+* ~3.1250% - First cousins once removed
+* ~1.5625% - Second cousins
 
 ## Requirements
 
@@ -24,8 +26,12 @@ Supported DNA kit file formats:
 pip install -r requirements.txt
 ```
 
+```bash
+python utils/install_plink.py
+```
+
 ## Run
 
 ```bash
-python dna_inbred_estimate.py -file <file-name> [OPTIONS]
+python app.py -file <file-name> [OPTIONS]
 ```

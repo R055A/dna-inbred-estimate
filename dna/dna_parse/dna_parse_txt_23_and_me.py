@@ -1,22 +1,19 @@
-from dna_f_roh_estimate.dna_f_roh_enum import (
-    DnaKitFileHeader23AndMe,
-    DnaKitFileInvalidAllelesSymbol,
-)
-from dna_f_roh_estimate.dna_f_roh_estimate_abstract_txt import InbredEstimateAbstractTxt
+from dna.dna_enum import DnaKitFileInvalidAllelesSymbol, DnaKitFileHeader23AndMe
+from dna.dna_parse.dna_parse_txt import ParseFileTXT
 
 
-class InbredEstimate23AndMe(InbredEstimateAbstractTxt):
+class ParseFile23AndMeTXT(ParseFileTXT):
     """
-    Estimate F_ROH score, representing inbreeding/shared ancestry coefficient score, from 23AndMe.com DNA kit data.
+    Parse raw DNA data to DataDNA dataclass format from 23andMe DNA kit .txt file. Extends ParseFileTXT.
     """
 
     __INVALID_ALLELES: set[DnaKitFileInvalidAllelesSymbol] = {
         DnaKitFileInvalidAllelesSymbol.ZERO
-    }  # There are likely more invalid entries yet to be discovered in more files
+    }
 
     def __init__(self, file_name: str | None = None) -> None:
         """
-        Class constructor for instantiating an F_ROH estimator instance for 23AndMe DNA kits with optional file name.
+        Class constructor with optional file_name parameter.
         :param file_name: Path name to a supported DNA kit data .txt file. If provided, file is read at instantiation.
         """
         super().__init__(
@@ -41,4 +38,4 @@ class InbredEstimate23AndMe(InbredEstimateAbstractTxt):
         )
         if not self._is_valid_alleles(alleles_data=result):
             return [None, None]
-        return list(result) + [None]
+        return list[str](result) + [None]

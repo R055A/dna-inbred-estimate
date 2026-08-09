@@ -1,58 +1,44 @@
 from argparse import ArgumentParser, Namespace
-from itertools import islice
+from dna.dna_data import DataConfigFROH
 
 
 def parse_args() -> Namespace:
+    default_config: DataConfigFROH = DataConfigFROH()
     parser = ArgumentParser(description="Estimate F_ROH from DNA data kit file.")
     parser.add_argument("-file", help="Raw DNA data kit file.", required=True)
     parser.add_argument(
         "-min_snp",
         help="Minimum number of SNP count required for a valid candidate ROH segment.",
         type=int,
-        default=100,
+        default=default_config.roh_min_snp_cnt,
         required=False,
     )
     parser.add_argument(
         "-min_bp_len",
         help="Minimum base-pair length required for a valid candidate ROH segment.",
         type=int,
-        default=1_000_000,
+        default=default_config.roh_min_base_pair_len,
         required=False,
     )
     parser.add_argument(
         "-max_bp_range",
         help="Maximum base-pair range between adjacent SNP genotypes in a valid candidate ROH.",
         type=int,
-        default=1_000_000,
+        default=default_config.roh_max_base_pair_range,
         required=False,
     )
     parser.add_argument(
         "-max_snp_het",
         help="Maximum number of heterozygous SNP genotypes in a valid candidate ROH segment.",
         type=int,
-        default=1,
+        default=default_config.snp_max_heterozygous,
         required=False,
     )
     parser.add_argument(
         "-max_snp_avg_range",
         help="Maximum avg range between adjacent SNP genotypes in a candidate ROH segment in Kb.",
         type=int,
-        default=50,
+        default=default_config.snp_max_avg_range_kb,
         required=False,
     )
     return parser.parse_args()
-
-
-def read_data_file_first_line(file_name: str) -> str:
-    with open(file_name, "r", encoding="utf-8-sig") as f:
-        return f.readline()
-
-
-def read_data_file_first_five_lines(file_name: str) -> str:
-    with open(file_name, "r", encoding="utf-8-sig") as f:
-        return " ".join(line.rstrip("\r\n") for line in islice(f, 5))
-
-
-def read_data_file_all_lines(file_name: str) -> list[str]:
-    with open(file_name, "r", encoding="utf-8-sig") as f:
-        return f.read().splitlines()

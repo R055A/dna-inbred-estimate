@@ -1,22 +1,19 @@
-from dna_f_roh_estimate.dna_f_roh_enum import (
-    DnaKitFileHeaderAncestry,
-    DnaKitFileInvalidAllelesSymbol,
-)
-from dna_f_roh_estimate.dna_f_roh_estimate_abstract_txt import InbredEstimateAbstractTxt
+from dna.dna_enum import DnaKitFileInvalidAllelesSymbol, DnaKitFileHeaderAncestry
+from dna.dna_parse.dna_parse_txt import ParseFileTXT
 
 
-class InbredEstimateAncestry(InbredEstimateAbstractTxt):
+class ParseFileAncestryTXT(ParseFileTXT):
     """
-    Estimate F_ROH score, representing inbreeding/shared ancestry coefficient score, from Ancestry.com DNA kit data.
+    Parse raw DNA data to DataDNA dataclass format from Ancestry DNA kit .txt file. Extends ParseFileTXT.
     """
 
     __INVALID_ALLELES: set[DnaKitFileInvalidAllelesSymbol] = {
         DnaKitFileInvalidAllelesSymbol.ZERO
-    }  # There are likely more invalid entries yet to be discovered in more files
+    }
 
     def __init__(self, file_name: str | None = None) -> None:
         """
-        Class constructor for instantiating an F_ROH estimator instance for Ancestry DNA kits with optional file name.
+        Class constructor with optional file_name parameter.
         :param file_name: Path name to a supported DNA kit data .txt file. If provided, file is read at instantiation.
         """
         super().__init__(

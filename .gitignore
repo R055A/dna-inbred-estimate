@@ -3,6 +3,9 @@
 *.csv
 !requirements.txt
 
+# PLINK executable
+plink/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

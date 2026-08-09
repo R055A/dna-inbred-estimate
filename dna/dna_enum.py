@@ -29,3 +29,9 @@ class DnaKitFileUniqueIdentifier(Enum):
 class DnaKitFileInvalidAllelesSymbol(Enum):
     ZERO = "0"
     DASH = "--"
+
+
+class PlinkHeader(Enum):
+    CHR = "CHR"
+    POS_ONE = "POS1"
+    POS_TWO = "POS2"
