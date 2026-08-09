@@ -1,22 +1,19 @@
-from dna_f_roh_estimate.dna_f_roh_enum import (
-    DnaKitFileHeaderMyHeritage,
-    DnaKitFileInvalidAllelesSymbol,
-)
-from dna_f_roh_estimate.dna_f_roh_estimate_abstract_csv import InbredEstimateAbstractCsv
+from dna.dna_enum import DnaKitFileInvalidAllelesSymbol, DnaKitFileHeaderMyHeritage
+from dna.dna_parse.dna_parse_csv import ParseFileCSV
 
 
-class InbredEstimateMyHeritage(InbredEstimateAbstractCsv):
+class ParseFileMyHeritageCSV(ParseFileCSV):
     """
-    Estimate F_ROH score, representing inbreeding/shared ancestry coefficient score, from MyHeritage.com DNA kit data.
+    Parse raw DNA data to DataDNA dataclass format from MyHeritage DNA kit .csv file. Extends ParseFileCSV.
     """
 
     __INVALID_ALLELES: set[DnaKitFileInvalidAllelesSymbol] = {
         DnaKitFileInvalidAllelesSymbol.DASH
-    }  # There are likely more invalid entries yet to be discovered in more files
+    }
 
     def __init__(self, file_name: str | None = None) -> None:
         """
-        Class constructor for instantiating an F_ROH estimator instance for MyHeritage DNA kits with optional file name.
+        Class constructor with optional file_name parameter.
         :param file_name: Path name to a supported DNA kit data .csv file. If provided, file is read at instantiation.
         """
         super().__init__(
@@ -41,4 +38,4 @@ class InbredEstimateMyHeritage(InbredEstimateAbstractCsv):
         )
         if not self._is_valid_alleles(alleles_data=result):
             return [None, None]
-        return list(result) + [None]
+        return list[str](result) + [None]

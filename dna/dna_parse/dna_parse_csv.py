@@ -1,12 +1,12 @@
-from dna_f_roh_estimate.dna_f_roh_estimate_abstract import InbredEstimateAbstract
-from dna_f_roh_estimate.dna_f_roh_enum import DnaKitFileInvalidAllelesSymbol
+from dna.dna_parse.dna_parse_abstract import ParseFileDNA
+from dna.dna_enum import DnaKitFileInvalidAllelesSymbol
 from abc import abstractmethod
 from csv import reader
 
 
-class InbredEstimateAbstractCsv(InbredEstimateAbstract):
+class ParseFileCSV(ParseFileDNA):
     """
-    Estimate F_ROH score, representing inbreeding/shared ancestry coefficient score, from .csv format DNA kit data.
+    Parse raw DNA data to DataDNA dataclass format from DNA kit .csv file. Extends ParseFileDNA.
     """
 
     def __init__(
@@ -16,7 +16,7 @@ class InbredEstimateAbstractCsv(InbredEstimateAbstract):
         invalid_alleles: set[DnaKitFileInvalidAllelesSymbol] | None = None,
     ) -> None:
         """
-        Class constructor for instantiating an F_ROH estimator instance for .csv format DNA kit data.
+        Class constructor with optional file_name, headers and invalid_alleles parameters.
         :param file_name: Path name to a supported DNA kit data .csv file. If provided, file is read at instantiation.
         :param headers: List of format-specific genotype header names in addition to [RSID, CHROMOSOME, POSITION].
         :param invalid_alleles: Allele file entries which are not valid for F_ROH analysis.
