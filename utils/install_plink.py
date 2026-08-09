@@ -40,8 +40,7 @@ PLINK_DOWNLOAD_URLS = {
         f"plink_win32_{PLINK_STABLE_BUILD}.zip"
     ),
     (ValidOpSys.DARWIN, ValidArch.BIT_64): (
-        f"https://s3.amazonaws.com/plink1-assets/"
-        f"plink_mac_{PLINK_STABLE_BUILD}.zip"
+        f"https://s3.amazonaws.com/plink1-assets/" f"plink_mac_{PLINK_STABLE_BUILD}.zip"
     ),
 }
 
