@@ -1,4 +1,4 @@
-# DNA Inbred Estimate
+# DNA Ancestry Estimate
 
 Compute F_ROH from raw genetic DNA data kit file using [PLINK](https://github.com/chrchang/plink-ng).
 
@@ -9,6 +9,8 @@ F_ROH estimates provide an approximate representation of genomic inbreeding or s
 * ~6.2500% - First cousins, half uncle–niece or half aunt–nephew
 * ~3.1250% - First cousins once removed
 * ~1.5625% - Second cousins
+
+Refer [here](https://en.wikipedia.org/wiki/Coefficient_of_inbreeding#Iterated_sibling_mating) for coefficients of multigenerational inbreeding.
 
 ## Requirements
 
