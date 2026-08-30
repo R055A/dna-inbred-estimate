@@ -20,7 +20,9 @@ Supported DNA kit file formats:
 * Ancestry.com (array v2, converter v1)
 * MyHeritage.com (format v1)
 * 23andMe.com
-* __TODO__: [test more formats](https://github.com/R055A/dna-inbred-estimate/issues/1)
+* FamilyTreeDNA.com (Build 37 concatenated raw data)
+* Living DNA (customer genotype data download file version 1.0.2)
+* tellmeGen.com
 
 ## Install
 
