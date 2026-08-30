@@ -20,10 +20,23 @@ class DnaKitFileHeader23AndMe(Enum):
     HEADER_GENOTYPE = "GENOTYPE"
 
 
+class DnaKitFileHeaderFamilyTreeDNA(Enum):
+    HEADER_RESULT = "RESULT"
+
+
+class DnaKitFileHeaderLivingDNA(Enum):
+    HEADER_GENOTYPE = "GENOTYPE"
+
+
+class DnaKitFileHeaderTellmeGen(Enum):
+    HEADER_GENOTYPE = "GENOTYPE"
+
+
 class DnaKitFileUniqueIdentifier(Enum):
     ANCESTRY = "AncestryDNA"
     MY_HERITAGE = "MyHeritage"
     TWENTY_THREE_AND_ME = "23andMe"
+    LIVING_DNA = "Living DNA"
 
 
 class DnaKitFileInvalidAllelesSymbol(Enum):
